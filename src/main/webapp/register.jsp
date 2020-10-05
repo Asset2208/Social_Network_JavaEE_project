@@ -27,7 +27,7 @@
                 %>
                 <%
                     String emailError = request.getParameter("emailerror");
-                    if(passError != null){
+                    if(emailError != null){
                 %>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     User with this email is already exists!
@@ -38,7 +38,20 @@
                 <%
                     }
                 %>
-                <form action="/register" method="post">
+                <%
+                    String success = request.getParameter("success");
+                    if(success != null){
+                %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    User added successfully!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <%
+                    }
+                %>
+                <form action="/toregistrate" method="post">
                     <div class="form-group">
                         <label>Email address</label>
                         <input type="email" required class="form-control" name="email">
@@ -58,6 +71,10 @@
                     <div class="form-group">
                         <label>Birthdate</label>
                         <input type="date" required class="form-control" name="birthdate">
+                    </div>
+                    <div class="form-group">
+                        <label>Picture URL</label>
+                        <input type="text" class="form-control" name="picture_url">
                     </div>
                     <div class="form-group">
                         <button class="btn btn-success">Sign Up</button>
