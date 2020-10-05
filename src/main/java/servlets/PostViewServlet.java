@@ -2,6 +2,7 @@ package servlets;
 
 import classes.DBManager;
 import classes.Post;
+import classes.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,20 +10,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 
-@WebServlet(value = "/home")
-public class HomeServlet extends HttpServlet {
+@WebServlet("/post")
+public class PostViewServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ArrayList<Post> posts = DBManager.getAllPosts();
-        if (posts != null){
-            request.setAttribute("posts", posts);
+        User user = (User)request.getSession().getAttribute("CURRENT_USER");
+        if (user != null){
+            Long id = Long.parseLong(request.getParameter("id"));
+            Post post = DBManager.getPost(id);
+            request.setAttribute("post", post);
+            request.getRequestDispatcher("/post_view.jsp").forward(request, response);
+        }
+        else {
+            response.sendRedirect("/login");
         }
 
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 }

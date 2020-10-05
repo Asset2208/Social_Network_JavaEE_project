@@ -1,11 +1,15 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.time.*" %>
+<%@ page import="classes.Post" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Aralasu.kz</title>
     <%@include file="vendor/head.jsp"%>
+    <script src="tinymce_latest_custom/tinymce/tinymce.min.js"></script>
+    <script>tinymce.init({ selector:'textarea' });</script>
 </head>
 <body>
     <%@include file="vendor/navbar.jsp"%>
@@ -52,7 +56,66 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    2 of 3 (wider)
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary mb-5" data-toggle="modal" data-target="#exampleModal">
+                        + ADD NEW
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="/addpost" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Add New Post</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>TITLE: </label>
+                                            <input type="text" name="title" class="form-control">
+                                            <input type="hidden" name="id" value="<%=currentUser.getId()%>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>SHORT CONTENT: </label>
+                                            <textarea name="short_content"  class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>CONTENT: </label>
+                                            <textarea name="content" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button class="btn btn-primary">Add</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <%
+                        ArrayList<Post> posts = (ArrayList<Post>)request.getAttribute("posts");
+                        if (posts != null){
+                            for (Post post : posts){
+                    %>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title"><%=post.getTitle()%></h5>
+                                <p class="card-text"><%=post.getShort_content()%></p>
+                                <a href="post?id=<%=post.getId()%>" class="btn btn-outline-primary">More -></a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <p class="text-muted">Posted on <%=post.getPost_date()%> by <span style="color:#17339B; font-weight: bold;"><%=post.getUser().getFullName()%></span></p>
+                            </div>
+                        </div>
+                    <%
+                            }
+                        }
+                    %>
                 </div>
                 <div class="col">
                     <div class="card mb-5">
@@ -70,7 +133,7 @@
                         <div class="card-header text-white bg-primary" style="font-weight: bold;">
                             My Games
                         </div>
-                        <div class="card-body" style="font-size: 14px; font-weight: bold;  style="color: #17339B;" ">
+                        <div class="card-body" style="font-size: 14px; font-weight: bold; color: #17339B;">
                             <a href="#" style="color: #17339B;">FOOTBALL ONLINE</a> <br><br>
                             <a href="#" style="color: #17339B;">PING-PONG ONLINE</a> <br><br>
                             <a href="#" style="color: #17339B;">CHESS MASTERS</a>  <br><br>

@@ -1,6 +1,7 @@
 package classes;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DBManager {
     private static Connection connection;
@@ -34,6 +35,24 @@ public class DBManager {
         }
     }
 
+    public static void addPost(Post post) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO posts (author_id, title, short_content, content, post_date)"
+            + " VALUES (?, ?, ?, ?, ?)");
+            ps.setLong(1, post.getUser().getId());
+            ps.setString(2, post.getTitle());
+            ps.setString(3, post.getShort_content());
+            ps.setString(4, post.getContent());
+            ps.setTimestamp(5, post.getPost_date());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
     public static User getUserByEmail(String email) {
@@ -41,6 +60,32 @@ public class DBManager {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * from users WHERE email = ?");
             ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                user = new User(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getDate("birth_date"),
+                        rs.getString("picture_url")
+                );
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
+    private static User getUserById(Long idx) {
+        User user = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * from users WHERE id = ?");
+            ps.setLong(1, idx);
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()){
@@ -105,5 +150,61 @@ public class DBManager {
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static ArrayList<Post> getAllPosts() {
+        ArrayList<Post> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * from posts");
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Long id = rs.getLong("id");
+                Long author_id = rs.getLong("author_id");
+                String title = rs.getString("title");
+                String short_content = rs.getString("short_content");
+                String content = rs.getString("content");
+                Timestamp date = rs.getTimestamp("post_date");
+
+                User user = getUserById(author_id);
+
+                list.add(new Post(id, user, title, short_content, content, date));
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+
+    public static Post getPost(Long idx) {
+        Post post = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * from posts WHERE id = ?");
+
+            ps.setLong(1, idx);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Long id = rs.getLong("id");
+                Long author_id = rs.getLong("author_id");
+                String title = rs.getString("title");
+                String short_content = rs.getString("short_content");
+                String content = rs.getString("content");
+                Timestamp date = rs.getTimestamp("post_date");
+
+                User user = getUserById(author_id);
+
+                post = new Post(id, user, title, short_content, content, date);
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return post;
     }
 }
