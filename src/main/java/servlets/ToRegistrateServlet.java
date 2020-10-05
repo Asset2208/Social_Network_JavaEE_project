@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,6 +19,20 @@ import java.time.format.DateTimeFormatter;
 
 @WebServlet(value = "/toregistrate")
 public class ToRegistrateServlet extends HttpServlet {
+    public static boolean isValid(String url)
+    {
+        /* Try creating a valid URL */
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+
+        // If there was an Exception
+        // while creating URL object
+        catch (Exception e) {
+            return false;
+        }
+    }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
@@ -34,7 +49,7 @@ public class ToRegistrateServlet extends HttpServlet {
         String redirect = "/register?passworderror";
 
 
-        if (picture_url.equals("")) {
+        if (picture_url.equals("") || !isValid(picture_url)) {
             picture_url = "https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png";
         }
 
