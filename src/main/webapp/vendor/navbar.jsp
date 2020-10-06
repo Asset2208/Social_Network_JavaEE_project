@@ -38,7 +38,7 @@
                     <a class="nav-link" href="#">Groups</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">My Posts</a>
+                    <a class="nav-link" href="/myposts">My Posts</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Messages</a>

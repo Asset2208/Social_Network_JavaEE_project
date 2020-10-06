@@ -30,7 +30,13 @@
         else {
         %>
         <div class="col" style="margin: 0;">
-            <img src="<%=currentUser.getPicture_url()%>" style="max-width: 285px; max-height: 350px; border-radius: 2%;">
+
+            <img id="foo" src="<%=currentUser.getPicture_url()%>" style="max-width: 285px; max-height: 350px; border-radius: 2%;" onerror="standby()">
+            <script>
+                function standby() {
+                    document.getElementById('foo').src = 'https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png'
+                }
+            </script>
             <div class="card mt-2">
                 <div class="card-header">
                     <%
@@ -45,8 +51,8 @@
                     <p style="font-weight: bold; margin: 0;"> <%=currentUser.getFullName()%>, <%=period.getYears()%> years </p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="/profile" style="font-weight: bold;">My Profile</a></li>
-                    <li class="list-group-item"><a href="/settings" style="font-weight: bold;">Settings</a></li>
+                    <li class="list-group-item"><a href="/" style="font-weight: bold;">My Profile</a></li>
+                    <li class="list-group-item"><a href="/profile" style="font-weight: bold;">Settings</a></li>
                     <li class="list-group-item"><a href="/logout" style="font-weight: bold; color: darkred;">Logout</a></li>
                 </ul>
             </div>

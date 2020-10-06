@@ -3,11 +3,13 @@ package servlets;
 import classes.DBManager;
 import classes.User;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
@@ -32,16 +34,33 @@ public class EditPictureServlet extends HttpServlet {
         String picture_url = request.getParameter("picture_url");
 
         User user = (User)request.getSession().getAttribute("CURRENT_USER");
+        if (user!= null){
+            String redirect = "/profile?urlerror";
+            if (isValid(picture_url)){
+                BufferedImage image = null;
+                try
+                {
+                    URL url = new URL(picture_url);
+                    image = ImageIO.read(url);
 
-        String redirect = "/profile?urlerror";
-        if (isValid(picture_url)){
-            redirect = "/profile?urlsuccess";
-            DBManager.updatePicture(user.getId(), picture_url);
-            User new_user = DBManager.getUserByEmail(user.getEmail());
-            request.getSession().setAttribute("CURRENT_USER", new_user);
+                    redirect = "/profile?urlsuccess";
+                    DBManager.updatePicture(user.getId(), picture_url);
+                    User new_user = DBManager.getUserByEmail(user.getEmail());
+                    request.getSession().setAttribute("CURRENT_USER", new_user);
+                } catch (IOException e) {
+                    System.out.println("Unable to retrieve Image!!!");
+                    e.printStackTrace();
+                }
+
+            }
+
+            response.sendRedirect(redirect);
+        }
+        else {
+            response.sendRedirect("/");
         }
 
-        response.sendRedirect(redirect);
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

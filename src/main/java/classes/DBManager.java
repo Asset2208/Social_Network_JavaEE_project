@@ -207,4 +207,64 @@ public class DBManager {
         }
         return post;
     }
+
+    public static ArrayList<Post> getPostsByAuthorId(Long author_idx) {
+        ArrayList<Post> posts = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * from posts WHERE author_id = ?");
+
+            ps.setLong(1, author_idx);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Long id = rs.getLong("id");
+                Long author_id = rs.getLong("author_id");
+                String title = rs.getString("title");
+                String short_content = rs.getString("short_content");
+                String content = rs.getString("content");
+                Timestamp date = rs.getTimestamp("post_date");
+
+                User user = getUserById(author_id);
+
+                posts.add(new Post(id, user, title, short_content, content, date));
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return posts;
+    }
+
+    public static void deletePost(Long idx) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM posts WHERE id = ?");
+            ps.setLong(1, idx);
+
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updatePost(Long id, String title, String short_content, String content, Timestamp sqlTimestamp) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE posts SET title=?, short_content=?, content=?, post_date=? WHERE id = ?");
+            ps.setString(1, title);
+            ps.setString(2, short_content);
+            ps.setString(3, content);
+            ps.setTimestamp(4, sqlTimestamp);
+            ps.setLong(5, id);
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

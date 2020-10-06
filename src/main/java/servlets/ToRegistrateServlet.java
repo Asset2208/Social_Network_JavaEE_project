@@ -3,11 +3,13 @@ package servlets;
 import classes.DBManager;
 import classes.User;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
@@ -51,6 +53,18 @@ public class ToRegistrateServlet extends HttpServlet {
 
         if (picture_url.equals("") || !isValid(picture_url)) {
             picture_url = "https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png";
+        }
+        else {
+            BufferedImage image = null;
+            try
+            {
+                URL url = new URL(picture_url);
+                image = ImageIO.read(url);
+                //If successful, process the message
+            } catch (IOException e) {
+                picture_url = "https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png";
+                e.printStackTrace();
+            }
         }
 
 
