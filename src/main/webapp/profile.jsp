@@ -6,6 +6,7 @@
 <head>
     <title>Aralasu.kz</title>
     <%@include file="vendor/head.jsp"%>
+    <link href="fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
 </head>
 <body>
 <%@include file="vendor/navbar.jsp"%>
@@ -51,9 +52,9 @@
                     <p style="font-weight: bold; margin: 0;"> <%=currentUser.getFullName()%>, <%=period.getYears()%> years </p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="/" style="font-weight: bold;">My Profile</a></li>
-                    <li class="list-group-item"><a href="/profile" style="font-weight: bold;">Settings</a></li>
-                    <li class="list-group-item"><a href="/logout" style="font-weight: bold; color: darkred;">Logout</a></li>
+                    <li class="list-group-item"><a href="/" style="font-weight: bold;"><i class="fas fa-address-card"></i> My Profile</a></li>
+                    <li class="list-group-item"><a href="/profile" style="font-weight: bold;"><i class="fas fa-cogs"></i> Settings</a></li>
+                    <li class="list-group-item"><a href="/logout" style="font-weight: bold; color: darkred;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -90,8 +91,7 @@
             <form action="/editprofile" method="post">
                 <div class="form-group">
                     <label>Email address</label>
-                    <input type="email" required class="form-control" name="email" value="<%=currentUser.getEmail()%>">
-                    <small class="form-text text-muted">Change your email</small>
+                    <input type="email" required class="form-control" value="<%=currentUser.getEmail()%>" readonly>
                 </div>
                 <div class="form-group">
                     <label>Full Name</label>

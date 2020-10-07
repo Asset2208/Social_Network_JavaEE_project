@@ -107,13 +107,12 @@ public class DBManager {
         return user;
     }
 
-    public static void updateProfile(Long idx, String new_email, String new_name, Date new_birthdate){
+    public static void updateProfile(User user){
         try {
-            PreparedStatement ps = connection.prepareStatement("UPDATE users SET email = ?, full_name = ?, birth_date = ? WHERE id = ?");
-            ps.setString(1, new_email);
-            ps.setString(2, new_name);
-            ps.setDate(3, new_birthdate);
-            ps.setLong(4, idx);
+            PreparedStatement ps = connection.prepareStatement("UPDATE users SET full_name = ?, birth_date = ? WHERE id = ?");
+            ps.setString(1, user.getFullName());
+            ps.setDate(2, user.getBirthDate());
+            ps.setLong(3, user.getId());
 
             ps.executeUpdate();
             ps.close();
@@ -156,7 +155,7 @@ public class DBManager {
     public static ArrayList<Post> getAllPosts() {
         ArrayList<Post> list = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * from posts");
+            PreparedStatement ps = connection.prepareStatement("SELECT * from posts ORDER BY post_date DESC");
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
@@ -211,7 +210,7 @@ public class DBManager {
     public static ArrayList<Post> getPostsByAuthorId(Long author_idx) {
         ArrayList<Post> posts = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * from posts WHERE author_id = ?");
+            PreparedStatement ps = connection.prepareStatement("SELECT * from posts WHERE author_id = ? ORDER BY post_date DESC ");
 
             ps.setLong(1, author_idx);
 

@@ -3,6 +3,7 @@
 <head>
     <title>Register</title>
     <%@include file="vendor/head.jsp"%>
+    <link href="fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
 </head>
 <body>
     <%@include file="vendor/navbar.jsp"%>

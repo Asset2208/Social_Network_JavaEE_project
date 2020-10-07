@@ -8,6 +8,9 @@
 <head>
     <title>Aralasu.kz</title>
     <%@include file="vendor/head.jsp"%>
+
+    <link href="fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
+
     <script src="tinymce_latest_custom/tinymce/tinymce.min.js"></script>
     <script>tinymce.init({ selector:'textarea' });</script>
 </head>
@@ -54,9 +57,9 @@
                     <p style="font-weight: bold; margin: 0;"> <%=currentUser.getFullName()%>, <%=period.getYears()%> years </p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><a href="/" style="font-weight: bold;">My Profile</a></li>
-                    <li class="list-group-item"><a href="/profile" style="font-weight: bold;">Settings</a></li>
-                    <li class="list-group-item"><a href="/logout" style="font-weight: bold; color: darkred;">Logout</a></li>
+                    <li class="list-group-item"><a href="/" style="font-weight: bold;"><i class="fas fa-address-card"></i> My Profile</a></li>
+                    <li class="list-group-item"><a href="/profile" style="font-weight: bold;"><i class="fas fa-cogs"></i> Settings</a></li>
+                    <li class="list-group-item"><a href="/logout" style="font-weight: bold; color: darkred;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -113,15 +116,15 @@
                     <p class="card-text"><%=post.getShort_content()%></p>
 
                     <div class="row" style="max-height: 40px;">
-                        <a href="post?id=<%=post.getId()%>" class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;">More -></a>
+                        <a href="post?id=<%=post.getId()%>" class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;">More <i class="fas fa-arrow-circle-right"></i></a>
 
                         <form action="/deletepost" method="post">
                             <input type="hidden" name="id" value="<%=post.getId()%>">
-                            <button class="btn btn-warning mr-2">Delete</button>
+                            <button class="btn btn-warning mr-2"><i class="fas fa-trash-alt"></i> Delete</button>
                         </form>
 
                         <button type="button" class="btn btn-primary mb-5" data-toggle="modal" data-target="#edit<%=post.getId()%>Modal">
-                            Edit
+                            <i class="fas fa-edit"></i> Edit
                         </button>
 
                         <!-- Modal -->

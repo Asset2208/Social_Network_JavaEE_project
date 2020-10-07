@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 public class EditProfileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String email = request.getParameter("email");
         String full_name = request.getParameter("full_name");
         String birthdate = request.getParameter("birthdate");
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -27,22 +26,15 @@ public class EditProfileServlet extends HttpServlet {
         User user = (User)request.getSession().getAttribute("CURRENT_USER");
 
 
-        if (user.getEmail().equals(email)){
-            DBManager.updateProfile(user.getId(), email, full_name, date1);
-            User new_user = DBManager.getUserByEmail(email);
-            request.getSession().setAttribute("CURRENT_USER", new_user);
+        if (user != null){
+            user.setFullName(full_name);
+            user.setBirthDate(date1);
+            DBManager.updateProfile(user);
+            request.getSession().setAttribute("CURRENT_USER", user);
             response.sendRedirect("/profile?success");
         }
         else {
-            String redirect = "/profile?emailerror";
-            User testUser = DBManager.getUserByEmail(email);
-            if (testUser == null) {
-                DBManager.updateProfile(user.getId(), email, full_name, date1);
-                User new_user = DBManager.getUserByEmail(email);
-                request.getSession().setAttribute("CURRENT_USER", new_user);
-                redirect = "/?success";
-            }
-            response.sendRedirect(redirect);
+            response.sendRedirect("/");
         }
 
 
