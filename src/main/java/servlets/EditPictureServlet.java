@@ -34,7 +34,7 @@ public class EditPictureServlet extends HttpServlet {
         String picture_url = request.getParameter("picture_url");
 
         User user = (User)request.getSession().getAttribute("CURRENT_USER");
-        if (user!= null){
+        if (user!= null && !picture_url.equals("")){
             String redirect = "/profile?urlerror";
             if (isValid(picture_url)){
                 BufferedImage image = null;
@@ -54,6 +54,12 @@ public class EditPictureServlet extends HttpServlet {
 
             }
 
+            response.sendRedirect(redirect);
+        }
+        else if (user != null){
+            String redirect = "/profile?urlerror";
+            picture_url = "https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png";
+            DBManager.updatePicture(user.getId(), picture_url);
             response.sendRedirect(redirect);
         }
         else {

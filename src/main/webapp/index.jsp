@@ -10,7 +10,7 @@
     <title>Aralasu.kz</title>
     <%@include file="vendor/head.jsp"%>
 
-    <link href="fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
+    <link href="fontawesome-free-5.15.1-web/fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
 
     <script src="tinymce_latest_custom/tinymce/tinymce.min.js"></script>
     <script>tinymce.init({ selector:'textarea' });</script>

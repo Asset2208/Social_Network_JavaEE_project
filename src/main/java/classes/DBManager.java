@@ -81,6 +81,33 @@ public class DBManager {
         return user;
     }
 
+    public static ArrayList<User> getAllUsersByFullName(String full_name) {
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * from users WHERE full_name LIKE ?");
+            String search_name = "%"+full_name+"%";
+            ps.setString(1, search_name);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()){
+                users.add(new User(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("full_name"),
+                        rs.getDate("birth_date"),
+                        rs.getString("picture_url"))
+                );
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
     private static User getUserById(Long idx) {
         User user = null;
         try {
@@ -265,5 +292,88 @@ public class DBManager {
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ArrayList<User> getAllUserFriends(Long idx) {
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT f.id, f.user_id, f.friend_id, f.added_time, fr.email, fr.password, fr.full_name, fr.birth_date, fr.picture_url FROM friends f " +
+                    " INNER JOIN users fr ON f.friend_id = fr.id" +
+                    " WHERE f.user_id = ? ORDER BY added_time DESC");
+
+            ps.setLong(1, idx);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+
+                users.add(
+                        new User(
+                                rs.getLong("friend_id"),
+                                rs.getString("email"),
+                                rs.getString("password"),
+                                rs.getString("full_name"),
+                                rs.getDate("birth_date"),
+                                rs.getString("picture_url")
+                        )
+                );
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    public static ArrayList<Friends> getAllFriends(Long idx) {
+        ArrayList<Friends> friends = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM friends WHERE user_id = ?");
+
+            ps.setLong(1, idx);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+
+                friends.add(
+                        new Friends(
+                                rs.getLong("id"),
+                                rs.getLong("user_id"),
+                                rs.getLong("friend_id"),
+                                rs.getTimestamp("added_time")
+                        )
+                );
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return friends;
+    }
+
+    public static ArrayList<Friends_requests> getAllFriendsRequests(Long idx) {
+        ArrayList<Friends_requests> friends_requests = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM friends_requests WHERE user_id = ?");
+
+            ps.setLong(1, idx);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+
+                friends_requests.add(
+                        new Friends_requests(
+                                rs.getLong("id"),
+                                rs.getLong("user_id"),
+                                rs.getLong("request_sender_id"),
+                                rs.getTimestamp("sent_time")
+                        )
+                );
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return friends_requests;
     }
 }

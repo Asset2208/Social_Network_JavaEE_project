@@ -6,7 +6,7 @@
 <head>
     <title>Aralasu.kz</title>
     <%@include file="vendor/head.jsp"%>
-    <link href="fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
+    <link href="fontawesome-free-5.15.1-web/fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
 </head>
 <body>
 <%@include file="vendor/navbar.jsp"%>
@@ -142,7 +142,7 @@
             <form action="/editpicture" method="post">
                 <div class="form-group">
                     <label>Picture URL</label>
-                    <input type="text" required class="form-control" name="picture_url" value="<%=currentUser.getPicture_url()%>">
+                    <input type="text" class="form-control" name="picture_url" value="<%=currentUser.getPicture_url()%>">
                 </div>
                 <div class="form-group">
                     <button class="btn btn-success" style="background-color: #17339B; border: none;">Update Picture</button>

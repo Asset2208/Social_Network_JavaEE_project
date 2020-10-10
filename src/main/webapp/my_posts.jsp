@@ -9,7 +9,7 @@
     <title>Aralasu.kz</title>
     <%@include file="vendor/head.jsp"%>
 
-    <link href="fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
+    <link href="fontawesome-free-5.15.1-web/fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
 
     <script src="tinymce_latest_custom/tinymce/tinymce.min.js"></script>
     <script>tinymce.init({ selector:'textarea' });</script>
@@ -66,7 +66,7 @@
         <div class="col-6">
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-primary mb-5" data-toggle="modal" data-target="#exampleModal">
-                + ADD NEW
+                <i class="fas fa-plus-square"></i> ADD NEW
             </button>
 
             <!-- Modal -->

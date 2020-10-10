@@ -39,7 +39,7 @@
                     <a class="nav-link" href="#"><i class="fas fa-newspaper"></i> Feed</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-user-friends"></i> My friends</a>
+                    <a class="nav-link" href="/friends"><i class="fas fa-user-friends"></i> My friends</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-users"></i> Groups</a>
