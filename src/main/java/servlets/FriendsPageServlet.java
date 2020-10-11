@@ -22,6 +22,9 @@ public class FriendsPageServlet extends HttpServlet {
 
         if (user != null && full_name == null){
             ArrayList<User> friends_of_user = DBManager.getAllUserFriends(user.getId());
+            ArrayList<User> received_users_requests = DBManager.getAllReceivedUsersRequests(user.getId());
+
+            request.setAttribute("received_users_requests", received_users_requests);
             request.setAttribute("friends_of_user", friends_of_user);
             request.getRequestDispatcher("/friends.jsp").forward(request, response);
         }
@@ -29,10 +32,12 @@ public class FriendsPageServlet extends HttpServlet {
             ArrayList<User> search_users = DBManager.getAllUsersByFullName(full_name);
             ArrayList<Friends> friends = DBManager.getAllFriends(user.getId());
             ArrayList<Friends_requests> friends_requests = DBManager.getAllFriendsRequests(user.getId());
+            ArrayList<Friends_requests> received_requests = DBManager.getAllFriendsReceivedRequests(user.getId());
             request.setAttribute("search_content", full_name);
             request.setAttribute("search_users", search_users);
             request.setAttribute("friends", friends);
             request.setAttribute("friends_requests", friends_requests);
+            request.setAttribute("received_requests", received_requests);
             request.getRequestDispatcher("/friends.jsp").forward(request, response);
         }
         else {

@@ -108,7 +108,7 @@ public class DBManager {
         return users;
     }
 
-    private static User getUserById(Long idx) {
+    public static User getUserById(Long idx) {
         User user = null;
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * from users WHERE id = ?");
@@ -354,6 +354,32 @@ public class DBManager {
     public static ArrayList<Friends_requests> getAllFriendsRequests(Long idx) {
         ArrayList<Friends_requests> friends_requests = new ArrayList<>();
         try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM friends_requests WHERE request_sender_id = ?");
+
+            ps.setLong(1, idx);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+
+                friends_requests.add(
+                        new Friends_requests(
+                                rs.getLong("id"),
+                                rs.getLong("user_id"),
+                                rs.getLong("request_sender_id"),
+                                rs.getTimestamp("sent_time")
+                        )
+                );
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return friends_requests;
+    }
+
+    public static ArrayList<Friends_requests> getAllFriendsReceivedRequests(Long idx) {
+        ArrayList<Friends_requests> friends_requests = new ArrayList<>();
+        try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM friends_requests WHERE user_id = ?");
 
             ps.setLong(1, idx);
@@ -375,5 +401,99 @@ public class DBManager {
             e.printStackTrace();
         }
         return friends_requests;
+    }
+
+    public static ArrayList<User> getAllReceivedUsersRequests(Long idx) {
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT f.id, f.user_id, f.request_sender_id, f.sent_time, fr.email, fr.password, fr.full_name, fr.birth_date, fr.picture_url FROM friends_requests f " +
+                    " INNER JOIN users fr ON f.request_sender_id = fr.id" +
+                    " WHERE f.user_id = ? ORDER BY sent_time DESC");
+
+            ps.setLong(1, idx);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+
+                users.add(
+                        new User(
+                                rs.getLong("request_sender_id"),
+                                rs.getString("email"),
+                                rs.getString("password"),
+                                rs.getString("full_name"),
+                                rs.getDate("birth_date"),
+                                rs.getString("picture_url")
+                        )
+                );
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public static void sendRequestFriend(Friends_requests friends_requests) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO friends_requests (user_id, request_sender_id, sent_time)"
+                    + " VALUES (?, ?, ?)");
+            ps.setLong(1, friends_requests.getUser_id());
+            ps.setLong(2, friends_requests.getRequest_sender_id());
+            ps.setTimestamp(3, friends_requests.getSent_time());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void addFriend(Friends friends) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO friends (user_id, friend_id, added_time)"
+                    + " VALUES (?, ?, ?)");
+
+            ps.setLong(1, friends.getUser_id());
+            ps.setLong(2,friends.getFriend_id());
+            ps.setTimestamp(3, friends.getAdded_time());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteFriendsRequests(Long id, Long friend_id) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM friends_requests WHERE user_id = ? AND request_sender_id = ?");
+
+            ps.setLong(1, id);
+            ps.setLong(2, friend_id);
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteFriend(Long idx1, Long idx2) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM friends WHERE user_id = ? AND friend_id = ?");
+
+            ps.setLong(1, idx1);
+            ps.setLong(2, idx2);
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
