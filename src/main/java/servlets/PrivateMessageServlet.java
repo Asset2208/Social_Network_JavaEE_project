@@ -2,7 +2,7 @@ package servlets;
 
 import classes.Chats;
 import classes.DBManager;
-import classes.Post;
+import classes.Messages;
 import classes.User;
 
 import javax.servlet.ServletException;
@@ -13,27 +13,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-@WebServlet(value = "/friend")
-public class FriendPageServlet extends HttpServlet {
+@WebServlet(value = "/privatemessage")
+public class PrivateMessageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         User user = (User)request.getSession().getAttribute("CURRENT_USER");
         if (user != null) {
             Long id = Long.parseLong(request.getParameter("id"));
-            User friend = DBManager.getUserById(id);
-            ArrayList<Post> friend_posts = DBManager.getPostsByAuthorId(id);
-            Chats chats = DBManager.getChatById(user.getId(), id);
-            if (chats == null) {
-                chats = DBManager.getChatById(id, user.getId());
+            ArrayList<Messages> messages = DBManager.getAllMessagesByChatId(id);
+            Chats chats = DBManager.getChatByChatId(id);
+            if (!chats.getLatest_message_user().getId().equals(user.getId()) && !chats.isRead_by_receiver()){
+                chats.setRead_by_receiver(true);
+                DBManager.updateChatRead(chats);
             }
-            request.setAttribute("chat", chats);
-            request.setAttribute("friend", friend);
-            request.setAttribute("friend_posts", friend_posts);
-            request.getRequestDispatcher("/friend_page.jsp").forward(request, response);
+            request.setAttribute("chats", chats);
+            request.setAttribute("messages", messages);
+            request.getRequestDispatcher("/private_message.jsp").forward(request, response);
         }
         else {
             response.sendRedirect("/");

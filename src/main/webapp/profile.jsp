@@ -1,6 +1,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.time.*" %>
+<%@ page import="classes.DBManager" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -36,6 +37,7 @@
             <script>
                 function standby() {
                     document.getElementById('foo').src = 'https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png'
+
                 }
             </script>
             <div class="card mt-2">

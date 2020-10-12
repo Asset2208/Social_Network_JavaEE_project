@@ -43,12 +43,11 @@
         } else {
         %>
         <div class="col" style="margin: 0;">
-            <img id="foo" src="<%=currentUser.getPicture_url()%>"
+            <img id="foo2" src="<%=currentUser.getPicture_url()%>"
                  style="max-width: 285px; max-height: 350px; border-radius: 2%;" onerror="standby()">
             <script>
                 function standby() {
-                    document.getElementById('foo').src = 'https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png'
-
+                    document.getElementById('foo2').src = 'https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png'
                 }
             </script>
             <div class="card mt-2">
@@ -93,62 +92,73 @@
             <%
                 ArrayList<User> friends_of_user = (ArrayList<User>) request.getAttribute("friends_of_user");
                 String search_content = (String) request.getAttribute("search_content");
-                ArrayList<Friends_requests> received_requests = (ArrayList<Friends_requests>)request.getAttribute("received_requests");
-                ArrayList<User> received_users_requests = (ArrayList<User>)request.getAttribute("received_users_requests");
+                ArrayList<Friends_requests> received_requests = (ArrayList<Friends_requests>) request.getAttribute("received_requests");
+                ArrayList<User> received_users_requests = (ArrayList<User>) request.getAttribute("received_users_requests");
 
-                if (received_users_requests != null && received_users_requests.size() != 0 && search_content == null){
+                if (received_users_requests != null && received_users_requests.size() != 0 && search_content == null) {
             %>
             <div class="card mb-2">
                 <div class="card-header">
                     <h5> You have <%=received_users_requests.size()%> new requests</h5>
                 </div>
 
-            <%
+                <%
                     for (User user : received_users_requests) {
-            %>
-            <div class="card-body d-flex">
-                <img src="<%=user.getPicture_url()%>" style="border-radius: 100%; max-height: 150px; max-width: 150px;">
+                %>
+                <div class="card-body d-flex">
+                    <img id="foo3" src="<%=user.getPicture_url()%>"
+                         style="border-radius: 100%; max-height: 150px; max-width: 150px;" onerror="standby()">
 
-                <div class="ml-5">
-                    <a href="/user?id=<%=user.getId()%>&status=received_req"><h5 class="card-title"><%=user.getFullName()%>
-                    </h5></a>
-                    <%
-                        String b_date = user.getBirthDate().toString();
-                        SimpleDateFormat fr_formatter = new SimpleDateFormat("yyyy-MM-dd");
-                        Date fr_date = fr_formatter.parse(b_date);
-                        Instant fr_instant = fr_date.toInstant();
-                        ZonedDateTime fr_zone = fr_instant.atZone(ZoneId.systemDefault());
-                        LocalDate fr_givenDate = fr_zone.toLocalDate();
-                        Period fr_period = Period.between(fr_givenDate, LocalDate.now());
-                    %>
-                    <p class="card-text mb-5" style="text-decoration: none;"><%=fr_period.getYears()%> years</p>
+                    <script>
+                        function standby() {
+                            document.getElementById('foo3').src = 'https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png'
+                        }
+                    </script>
 
-                    <div class="row" style="max-height: 40px;">
-                        <form action="/sendresponsetofriend" method="post">
-                            <input type="hidden" name="friend_id" value="<%=user.getId()%>">
-                            <input type="hidden" name="response" value="Yes">
-                            <button class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i
-                                    class="fas fa-plus-square"></i> Confirm
-                            </button>
-                        </form>
-                        <form action="/sendresponsetofriend" method="post">
-                            <input type="hidden" name="friend_id" value="<%=user.getId()%>">
-                            <input type="hidden" name="response" value="NO">
-                            <button class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i
-                                    class="fas fa-trash-alt"></i> Reject
-                            </button>
-                        </form>
+                    <div class="ml-5">
+                        <div style="min-width: 150px;">
+                            <a href="/user?id=<%=user.getId()%>&status=received_req"><h5
+                                    class="card-title"><%=user.getFullName()%>
+                            </h5></a>
+                        </div>
 
+                        <%
+                            String b_date = user.getBirthDate().toString();
+                            SimpleDateFormat fr_formatter = new SimpleDateFormat("yyyy-MM-dd");
+                            Date fr_date = fr_formatter.parse(b_date);
+                            Instant fr_instant = fr_date.toInstant();
+                            ZonedDateTime fr_zone = fr_instant.atZone(ZoneId.systemDefault());
+                            LocalDate fr_givenDate = fr_zone.toLocalDate();
+                            Period fr_period = Period.between(fr_givenDate, LocalDate.now());
+                        %>
+                        <p class="card-text mb-5" style="text-decoration: none;"><%=fr_period.getYears()%> years</p>
+
+                        <div class="row" style="max-height: 40px;">
+                            <form action="/sendresponsetofriend" method="post">
+                                <input type="hidden" name="friend_id" value="<%=user.getId()%>">
+                                <input type="hidden" name="response" value="Yes">
+                                <button class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i
+                                        class="fas fa-plus-square"></i> Confirm
+                                </button>
+                            </form>
+                            <form action="/sendresponsetofriend" method="post">
+                                <input type="hidden" name="friend_id" value="<%=user.getId()%>">
+                                <input type="hidden" name="response" value="NO">
+                                <button class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i
+                                        class="fas fa-trash-alt"></i> Reject
+                                </button>
+                            </form>
+
+                        </div>
                     </div>
+
+
                 </div>
 
 
-            </div>
-
-
-            <%
-                }
-            %>
+                <%
+                    }
+                %>
             </div>
             <hr class="my-4">
             <%
@@ -174,12 +184,22 @@
                             boolean is_send_request = friends_requests.stream().anyMatch(p2);
                             Predicate<Friends_requests> p3 = friends_requests2 -> friends_requests2.getRequest_sender_id().equals(user.getId());
                             boolean is_received_request = received_requests.stream().anyMatch(p3);
-                            String urlToUser = (is_friend ? "/friend?id=" + user.getId() : (!is_send_request ? (!is_received_request ? "/user?id="+user.getId()+"&status=addtofriend" : "/user?id="+user.getId()+"&status=received_req") : "/user?id="+user.getId()+"&status=req_sent"));
+                            String urlToUser = (is_friend ? "/friend?id=" + user.getId() : (!is_send_request ? (!is_received_request ? "/user?id=" + user.getId() + "&status=addtofriend" : "/user?id=" + user.getId() + "&status=received_req") : "/user?id=" + user.getId() + "&status=req_sent"));
             %>
             <div class="card mb-2">
                 <div class="card-body d-flex">
-                    <a href="<%=urlToUser%>"><img src="<%=user.getPicture_url()%>"
-                                                  style="border-radius: 100%; max-height: 150px; max-width: 150px;"></a>
+                    <div style="min-width: 150px;">
+                        <a href="<%=urlToUser%>"><img id ="foo" src="<%=user.getPicture_url()%>"
+                                                      style="border-radius: 100%; max-height: 150px; max-width: 150px;"></a>
+                    </div>
+
+
+                    <script>
+                        function standby() {
+                            document.getElementById('foo').src = 'https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png'
+                        }
+                    </script>
+
                     <div class="ml-5">
                         <a href="<%=urlToUser%>"><h5 class="card-title"><%=user.getFullName()%>
                         </h5></a>
@@ -199,8 +219,45 @@
                         %>
                         <div class="row" style="max-height: 40px;">
 
-                            <a href="#" class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i
-                                    class="fas fa-paper-plane"></i> Send Message </a>
+                            <button type="button" class="btn btn-outline-primary ml-3 mr-2" data-toggle="modal"
+                                    data-target="#createChat<%=user.getId()%>" style="font-weight: bold;">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+
+<%--                                                        <a href="#" class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i class="fas fa-paper-plane"></i> Send Message </a>--%>
+                            <div class="modal fade" id="createChat<%=user.getId()%>" tabindex="-1"
+                                 aria-labelledby="createChat<%=user.getId()%>Label" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="post" action="/sendmessageout">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="createChat<%=user.getId()%>Label">Send
+                                                    Message to <%=user.getFullName()%>
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <input type="hidden" name="opponent_id" value="<%=user.getId()%>">
+                                                    <textarea name="message" placeholder="Message..."
+                                                              class="form-control"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button class="btn btn-success">Send</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                         <%
@@ -272,10 +329,21 @@
             %>
             <div class="card mb-2">
                 <div class="card-body d-flex">
-                    <a href="/friend?id=<%=user.getId()%>"><img src="<%=user.getPicture_url()%>" style="border-radius: 100%; max-height: 150px; max-width: 150px;"></a>
+                    <div style="min-width: 150px;">
+                        <a href="/friend?id=<%=user.getId()%>"><img id="foo4" src="<%=user.getPicture_url()%>"
+                                                                    style="border-radius: 100%; max-height: 150px; max-width: 150px;" onerror="standby()"></a>
+                    </div>
+
+
+                    <script>
+                        function standby() {
+                            document.getElementById('foo4').src = 'https://karateinthewoodlands.com/wp-content/uploads/2017/09/default-user-image.png'
+                        }
+                    </script>
 
                     <div class="ml-5">
-                        <a href="/friend?id=<%=user.getId()%>"><h5 class="card-title"><%=user.getFullName()%></h5></a>
+                        <a href="/friend?id=<%=user.getId()%>"><h5 class="card-title"><%=user.getFullName()%>
+                        </h5></a>
 
                         <%
                             String b_date = user.getBirthDate().toString();
@@ -290,8 +358,47 @@
 
                         <div class="row" style="max-height: 40px;">
 
-                            <a href="#" class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i
-                                    class="fas fa-paper-plane"></i> Send Message </a>
+<%--                                                        <a href="#" class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i--%>
+<%--                                                                class="fas fa-paper-plane"></i> Send Message </a>--%>
+                            <button type="button" class="btn btn-outline-primary ml-3 mr-2" data-toggle="modal"
+                                    data-target="#createChat<%=user.getId()%>_2" style="font-weight: bold;">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+
+                            <%--                            <a href="#" class="btn btn-outline-primary ml-3 mr-2" style="max-height: 40px;"><i class="fas fa-paper-plane"></i> Send Message </a>--%>
+                            <div class="modal fade" id="createChat<%=user.getId()%>_2" tabindex="-1"
+                                 aria-labelledby="createChat<%=user.getId()%>_2Label" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="post" action="/sendmessageout">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="createChat<%=user.getId()%>_2Label">Send
+                                                    Message to <%=user.getFullName()%>
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <input type="hidden" name="opponent_id" value="<%=user.getId()%>">
+                                                    <textarea name="message" placeholder="Message..."
+                                                              class="form-control"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button class="btn btn-success">Send</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
 

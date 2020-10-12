@@ -467,6 +467,46 @@ public class DBManager {
         }
     }
 
+    public static void addChat(Chats chats) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO chats (user_id, opponent_user_id, created_date, latest_message_text, latest_message_time, latest_message_user_id)"
+                    + " VALUES (?, ?, ?, ?, ?, ?)");
+
+            ps.setLong(1, chats.getUser().getId());
+            ps.setLong(2, chats.getOpponent_user().getId());
+            ps.setTimestamp(3, chats.getCreated_date());
+            ps.setString(4, chats.getLatest_message_text());
+            ps.setTimestamp(5, chats.getLatest_message_time());
+            ps.setLong(6, chats.getLatest_message_user().getId());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addMessage(Messages message) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO messages (chat_id, user_id, sender_id, message_text, read_by_receiver, sent_date)"
+                    + " VALUES (?, ?, ?, ?, ?, ?)");
+
+            ps.setLong(1, message.getChats().getId());
+            ps.setLong(2, message.getUser().getId());
+            ps.setLong(3, message.getSender().getId());
+            ps.setString(4, message.getMessage_text());
+            ps.setBoolean(5, message.isRead_by_receiver());
+            ps.setTimestamp(6, message.getSent_date());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void deleteFriendsRequests(Long id, Long friend_id) {
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM friends_requests WHERE user_id = ? AND request_sender_id = ?");
@@ -488,6 +528,194 @@ public class DBManager {
 
             ps.setLong(1, idx1);
             ps.setLong(2, idx2);
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Chats getChatById(Long user_id, Long opponent_id) {
+        Chats chats = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM chats c " +
+                    " WHERE c.user_id = ? AND c.opponent_user_id = ?");
+
+            ps.setLong(1, user_id);
+            ps.setLong(2, opponent_id);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Long id = rs.getLong("id");
+                Long us_id = rs.getLong("user_id");
+                Long op_id = rs.getLong("opponent_user_id");
+                Timestamp cr_date = rs.getTimestamp("created_date");
+                String latest_msg = rs.getString("latest_message_text");
+                Timestamp latest_msg_time = rs.getTimestamp("latest_message_time");
+                Long latest_msg_user_id = rs.getLong("latest_message_user_id");
+                boolean read_by_receiver = rs.getBoolean("read_by_receiver");
+
+                User user = getUserById(us_id);
+                User op_user = getUserById(op_id);
+                User lts_user = getUserById(latest_msg_user_id);
+                chats = new Chats(id, user, op_user, cr_date, latest_msg, latest_msg_time, lts_user, read_by_receiver);
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return chats;
+    }
+
+
+    public static void updateChat(Chats chats) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE chats SET latest_message_text=?, latest_message_time=?, latest_message_user_id=?, read_by_receiver = ? WHERE id = ?");
+            ps.setString(1, chats.getLatest_message_text());
+            ps.setTimestamp(2, chats.getLatest_message_time());
+            ps.setLong(3, chats.getLatest_message_user().getId());
+            ps.setBoolean(4, chats.isRead_by_receiver());
+            ps.setLong(5, chats.getId());
+
+            ps.executeUpdate();
+            ps.close();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Chats> getAllChatsByUserId(Long idx) {
+        ArrayList<Chats> chats = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM chats c" +
+                    " WHERE c.user_id = ? ORDER BY latest_message_time DESC");
+
+            ps.setLong(1, idx);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Long id = rs.getLong("id");
+                Long us_id = rs.getLong("user_id");
+                Long op_id = rs.getLong("opponent_user_id");
+                Timestamp cr_date = rs.getTimestamp("created_date");
+                String latest_msg = rs.getString("latest_message_text");
+                Timestamp latest_msg_time = rs.getTimestamp("latest_message_time");
+                Long latest_msg_user_id = rs.getLong("latest_message_user_id");
+                boolean read_by_receiver = rs.getBoolean("read_by_receiver");
+
+                User user = getUserById(us_id);
+                User op_user = getUserById(op_id);
+                User lts_user = getUserById(latest_msg_user_id);
+                chats.add(new Chats(id, user, op_user, cr_date, latest_msg, latest_msg_time, lts_user, read_by_receiver));
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return chats;
+    }
+
+    public static ArrayList<Chats> getAllChatsByOpponentId(Long idx) {
+        ArrayList<Chats> chats = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM chats c" +
+                    " WHERE c.opponent_user_id = ? ORDER BY latest_message_time DESC");
+
+            ps.setLong(1, idx);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Long id = rs.getLong("id");
+                Long us_id = rs.getLong("user_id");
+                Long op_id = rs.getLong("opponent_user_id");
+                Timestamp cr_date = rs.getTimestamp("created_date");
+                String latest_msg = rs.getString("latest_message_text");
+                Timestamp latest_msg_time = rs.getTimestamp("latest_message_time");
+                Long latest_msg_user_id = rs.getLong("latest_message_user_id");
+                boolean read_by_receiver = rs.getBoolean("read_by_receiver");
+
+                User user = getUserById(us_id);
+                User op_user = getUserById(op_id);
+                User lts_user = getUserById(latest_msg_user_id);
+                chats.add(new Chats(id, user, op_user, cr_date, latest_msg, latest_msg_time, lts_user, read_by_receiver));
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return chats;
+    }
+
+    public static ArrayList<Messages> getAllMessagesByChatId(Long idx) {
+        ArrayList<Messages> messages = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM messages" +
+                    " WHERE chat_id = ?");
+
+            ps.setLong(1, idx);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Long id = rs.getLong("id");
+                Long chat_id = rs.getLong("chat_id");
+                Long us_id = rs.getLong("user_id");
+                Long sender_id = rs.getLong("sender_id");
+                String msg = rs.getString("message_text");
+                boolean read_by_receiver = rs.getBoolean("read_by_receiver");
+                Timestamp sent_date = rs.getTimestamp("sent_date");
+
+                Chats chats = getChatByChatId(chat_id);
+                User user = getUserById(us_id);
+                User op_user = getUserById(sender_id);
+                messages.add(new Messages(id, chats, user, op_user, msg, read_by_receiver, sent_date));
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return messages;
+    }
+
+    public static Chats getChatByChatId(Long chat_id) {
+        Chats chats = null;
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM chats" +
+                    " WHERE id = ?");
+
+            ps.setLong(1, chat_id);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Long id = rs.getLong("id");
+                Long us_id = rs.getLong("user_id");
+                Long op_id = rs.getLong("opponent_user_id");
+                Timestamp cr_date = rs.getTimestamp("created_date");
+                String latest_msg = rs.getString("latest_message_text");
+                Timestamp latest_msg_time = rs.getTimestamp("latest_message_time");
+                Long latest_msg_user_id = rs.getLong("latest_message_user_id");
+                boolean read_by_receiver = rs.getBoolean("read_by_receiver");
+
+                User user = getUserById(us_id);
+                User op_user = getUserById(op_id);
+                User lts_user = getUserById(latest_msg_user_id);
+                chats = new Chats(id, user, op_user, cr_date, latest_msg, latest_msg_time, lts_user, read_by_receiver);
+            }
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return chats;
+    }
+
+    public static void updateChatRead(Chats chats) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("UPDATE chats SET read_by_receiver = ? WHERE id = ?");
+            ps.setBoolean(1, chats.isRead_by_receiver());
+            ps.setLong(2, chats.getId());
 
             ps.executeUpdate();
             ps.close();

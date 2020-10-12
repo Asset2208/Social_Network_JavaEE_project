@@ -48,7 +48,7 @@
                     <a class="nav-link" href="/myposts"><i class="far fa-comment"></i> My Posts</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-paper-plane"></i> Messages</a>
+                    <a class="nav-link" href="/messages"><i class="fas fa-paper-plane"></i> Messages</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-images"></i> Pictures</a>
