@@ -74,8 +74,8 @@
             </div>
         </div>
         <div class="col-6" >
-            <div class="card mb-5" style="overflow-y: auto; max-height: 370px;">
-                <div data-spy="scroll">
+            <div id="scroller" class="card mb-5" style="overflow-y: auto; max-height: 370px;">
+                <div>
                     <%
                         Chats chats = (Chats)request.getAttribute("chats");
                         ArrayList<Messages> messages = (ArrayList<Messages>)request.getAttribute("messages");
@@ -98,9 +98,14 @@
                         }
                     %>
 
-
                 </div>
+
             </div>
+
+            <script>
+                var element = document.getElementById("scroller");
+                element.scrollTop = element.scrollHeight;
+            </script>
 
 
             <div class="card mb-5">

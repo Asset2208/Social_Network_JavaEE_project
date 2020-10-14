@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet(value = "/messages")
 public class MessagesServlet extends HttpServlet {
@@ -36,6 +38,14 @@ public class MessagesServlet extends HttpServlet {
                 chats.addAll(chats1);
                 request.setAttribute("chats", chats);
             }
+
+            List<Chats> chatsList = chats.stream()
+                    .filter(x -> !x.getLatest_message_user().getId().equals(user.getId()))
+                    .filter(y -> !y.isRead_by_receiver())
+                    .collect(Collectors.toList());
+
+            request.setAttribute("not_read", chatsList.size());
+
             request.getRequestDispatcher("/messages.jsp").forward(request, response);
         }
         else {

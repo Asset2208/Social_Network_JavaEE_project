@@ -27,6 +27,8 @@ public class PrivateMessageServlet extends HttpServlet {
             Chats chats = DBManager.getChatByChatId(id);
             if (!chats.getLatest_message_user().getId().equals(user.getId()) && !chats.isRead_by_receiver()){
                 chats.setRead_by_receiver(true);
+                int not_read = (int) request.getSession().getAttribute("NOT_READ") - 1;
+                request.getSession().setAttribute("NOT_READ", not_read);
                 DBManager.updateChatRead(chats);
             }
             request.setAttribute("chats", chats);

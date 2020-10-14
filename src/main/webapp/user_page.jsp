@@ -12,8 +12,7 @@
 
     <link href="fontawesome-free-5.15.1-web/fontawesome-free-5.15.1-web/css/all.css" rel="stylesheet">
 
-    <script src="tinymce_latest_custom/tinymce/tinymce.min.js"></script>
-    <script>tinymce.init({ selector:'textarea' });</script>
+
     <style>
         .asdasd p { /* Запрещаем перенос строк */
             overflow: hidden;
@@ -129,9 +128,40 @@
                             }
                         %>
                     </li>
-                    <li class="list-group-item"><a href="#" style="font-weight: bold;"><i class="fas fa-paper-plane"></i> Send Message</a></li>
+                    <li class="list-group-item">
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#createChat" style="font-weight: bold; padding: 0;">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </li>
                     <li class="list-group-item"><a href="/logout" style="font-weight: bold; color: darkred;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
+            </div>
+        </div>
+
+        <div class="modal fade" id="createChat" tabindex="-1" aria-labelledby="createChatLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post" action="/sendmessageout">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createChatLabel">Send Message to <%=just_user.getFullName()%></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <input type="hidden" name="opponent_id" value="<%=just_user.getId()%>">
+                                <textarea name="message" placeholder="Message..." class="form-control"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button class="btn btn-success">Send</button>
+                        </div>
+                    </form>
+
+                </div>
             </div>
         </div>
 

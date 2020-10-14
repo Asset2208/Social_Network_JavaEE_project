@@ -1,3 +1,7 @@
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="classes.Chats" %>
+<%@ page import="java.util.stream.Collectors" %>
+<%@ page import="java.util.List" %>
 <%@include file="user.jsp"%>
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: #17339B;">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +52,23 @@
                     <a class="nav-link" href="/myposts"><i class="far fa-comment"></i> My Posts</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/messages"><i class="fas fa-paper-plane"></i> Messages</a>
+                    <a class="nav-link" href="/messages"><i class="fas fa-paper-plane"></i>
+                        <%
+                            Integer not_read = (Integer) request.getSession().getAttribute("NOT_READ");
+                            int nr = 0;
+                            if (not_read != 0){
+                        %>
+                        Messages (<%=not_read%>)
+                        <%
+                            }
+                            else {
+                        %>
+                        Messages
+                        <%
+                            }
+                        %>
+
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-images"></i> Pictures</a>
